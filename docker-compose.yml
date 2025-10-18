@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notes_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: nestjs_app
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+    command: npm run start:prod
+    restart: unless-stopped
+
+  migrations:
+    build:
+      context: .
+      target: builder  # IMPORTANT: use builder stage
+    container_name: nestjs_migrations
+    command: sh -c "npx drizzle-kit push --config=src/db/drizzle.config.ts"
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+    restart: "no"
+
+volumes:
+  pg_data:

@@ -9,12 +9,27 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Role } from 'src/common/enum/role.enum';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject('DATABASE') private db:NodePgDatabase<typeof import('../db/schema/users')> ) {}
+  constructor(
+    @Inject('DATABASE')
+    private db: NodePgDatabase<typeof import('../db/schema/users')>,
+  ) {}
 
-  async register(name: string, email: string, password: string) {
+  async register(name: string, email: string, password: string, role: string) {
+    // default role if not provided
+    const userRole = role ?? Role.USER;
+
+    if (!Object.values(Role).includes(userRole as Role)) {
+      throw new BadRequestException('Invalid role');
+    }
+
+    // if role is admin, then he can not register
+    if (userRole === Role.ADMIN) {
+      throw new BadRequestException('Admin cannot be registered');
+    }
 
     // 1️⃣ Check if user already exists
     const existingUser = await this.db
@@ -31,7 +46,7 @@ export class AuthService {
     // 3️⃣ Insert new user and return it
     const [newUser] = await this.db
       .insert(users)
-      .values({ name, email, password: hashedPassword })
+      .values({ name, email, password: hashedPassword, role: userRole })
       .returning(); // returns an array of inserted rows
 
     return newUser; // single user object
@@ -48,7 +63,7 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
     const token = jwt.sign(
-      { id: user.id },
+      { sub: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: '1d' },
     );
@@ -69,5 +84,4 @@ export class AuthService {
       return null;
     }
   }
-  
 }

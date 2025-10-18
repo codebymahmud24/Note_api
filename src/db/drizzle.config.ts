@@ -18,4 +18,12 @@ export default {
 // npx drizzle-kit push --config=src/db/drizzle.config.ts
 
 // // This is for Showing the database in a GUI
-// npx drizzle-kit studio
+// npx drizzle-kit studio --config=src/db/drizzle.config.ts
+
+
+//** 
+// docker compose exec app npx drizzle-kit push --config=src/db/drizzle.config.ts
+// docker compose exec app npx drizzle-kit generate --config=src/db/drizzle.config.ts
+// docker compose exec app npx drizzle-kit studio --config=src/db/drizzle.config.ts
+//  */
+

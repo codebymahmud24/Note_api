@@ -15,6 +15,27 @@
       "when": 1759982719507,
       "tag": "0001_strong_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760760817523,
+      "tag": "0002_dapper_nocturne",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760763808182,
+      "tag": "0003_complete_wendell_rand",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1760784887978,
+      "tag": "0004_special_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }

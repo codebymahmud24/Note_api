@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import type { Response, Request } from 'express';
 import * as Jwt from 'jsonwebtoken';
+import { Role } from 'src/common/enum/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -11,9 +12,9 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.register(body.name, body.email, body.password);
+    const user = await this.authService.register(body.name, body.email, body.password, body.role || Role.USER);
 
-    const token = Jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
+    const token = Jwt.sign({ sub: user.id, email: user.email, role: user.role  }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
     this.setAuthCookie(res, token);
     return { user, message: 'Registered successfully' };
   }
