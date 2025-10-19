@@ -6,7 +6,7 @@ import { NotesModule } from './notes/notes.module';
 import { TagsModule } from './tags/tags.module';
 
 @Module({
-  imports: [ ConfigModule.forRoot({isGlobal: true}), DatabaseModule, AuthModule, NotesModule, TagsModule],
+  imports: [ConfigModule.forRoot({isGlobal: true}), DatabaseModule, AuthModule, NotesModule, TagsModule],
   controllers: [],
   providers: [],
 })
